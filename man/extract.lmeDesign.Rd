@@ -14,8 +14,6 @@ extract.lmerDesign(m)
   \item{m}{fitted \code{lme}- or \code{lmer}-Object }
 }
 \value{a list with components
-  \item{Vlambda}{estimated covariance of the response divided by the estimated variance of the residuals}
-  \item{V}{estimated covariance of the error terms}
   \item{Vr}{estimated covariance of the random effects divided by the estimated variance of the residuals}
   \item{X}{design of the fixed effects}
   \item{Z}{design of the random effects}

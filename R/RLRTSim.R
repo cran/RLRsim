@@ -1,5 +1,5 @@
 `RLRTSim` <-
-function(X,Z,sqrt.Sigma,lambda0=NA, seed= NA, nsim=5000, use.approx=0,
+function(X,Z,sqrt.Sigma,lambda0=NA, seed= NA, nsim=10000, use.approx=0,
                    log.grid.hi=8, log.grid.lo=-10, gridlength=200)
 {
 if(is.na(lambda0)) lambda0<-0
@@ -78,20 +78,6 @@ if(use.approx) #should approximations be used
   K<-new.K
 }#end if(use.approx)
 
-#generate random samples
-w.k.sq.mat<-matrix(rchisq(nsim*K,1),nrow=K)  #K*nsim matrix of ChiSq(1)
-w.sum2<-try(rchisq(nsim,n-p-K),sil=TRUE)                   #1*nsim vector of ChiSq(n-p-K)
-if(class(w.sum2)=="try-error") w.sum2<-rep(0,nsim)
-
-rlrt1.lambdafix.vec<-function(lambda,mu.w,lambda0.mu.w,lambda0.mu,w.sum2,lambda0,mu,n,p)
-#vectorized version: lambda as scalar
-{
-     num<-  colSums(((lambda-lambda0)*mu.w)/(1+lambda*mu))
-     den<-  colSums((lambda0.mu.w) / (1+lambda*mu)) + t(w.sum2)
-
-     return( (n-p) * log(1+(num/den)) - sum(log((1+lambda*mu)/(lambda0.mu))))
-}
-
 make.lambdagrid<-function(lambda0,gridlength,log.grid.lo,log.grid.hi)
 #generate symmetric grid around lambda0 that is log-equidistant to the right,
 {
@@ -124,23 +110,24 @@ else
  return(c(0,leftgrid,lambda0,rightgrid))
 }
 }#end make.lambdagrid
-#matrix (K*nsim) (mu_i*w_ij) i=1:K, j=1:nsim
-mu.w<-mu*w.k.sq.mat
 
-lambda0.mu<-(1+lambda0*mu)   #K*1
 
-#matrix(K*nsim) ((1+lambda0*mu_i)w_ij) i=1:K, j=1:nsim
-lambda0.mu.w<-lambda0.mu*w.k.sq.mat
+lambda.grid    <-make.lambdagrid(lambda0,gridlength,log.grid.lo=log.grid.lo,log.grid.hi=log.grid.hi)
+  
+res <- .C("RLRsim", 
+                    p=as.integer(p),
+                    k=as.integer(K),
+																				n=as.integer(n),
+																				s=as.integer(nsim),
+																				g=as.integer(gridlength),
+																				q=as.integer(0),
+																				mu =as.double(mu),
+																				lambda =as.double(lambda.grid),
+																				lambda0 =as.double(lambda0),
+																				xi = as.double(mu),
+																				REML =as.logical(TRUE),
+																				res = double(nsim)) 
 
-   lambda.grid    <-make.lambdagrid(lambda0,gridlength,log.grid.lo=log.grid.lo,log.grid.hi=log.grid.hi)
-   rlrt.array     <-sapply(lambda.grid,rlrt1.lambdafix.vec,mu.w,lambda0.mu.w,lambda0.mu,w.sum2,lambda0,mu,n,p) #grid.length * nsim
-   max.index.rlrt.array  <-apply(rlrt.array,1,which.max) #column-indices of rowmaxima
-   rlrt.max       <-rlrt.array[cbind(1:nsim,max.index.rlrt.array)]
-   lambda.max     <-lambda.grid[max.index.rlrt.array]
-   res            <-as.data.frame(cbind(lambda.max,rlrt.max))
-
-colnames(res)<-c("lambda","rlrt")
-
-return(res)
+return(res$res)
 }#end RLRT1.sim
 

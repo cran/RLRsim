@@ -1,7 +1,6 @@
 `exactRLRT` <-
 function(m,mA=NULL,m0=NULL, seed= NA, nsim=10000,
-                   log.grid.hi=8, log.grid.lo=-10, gridlength=200,
-                   print.p=TRUE,return.sample=FALSE,...)
+                   log.grid.hi=8, log.grid.lo=-10, gridlength=200)
 {
 if(class(m)=="spm") {m<-m$fit; class(m)<-"lme"}
 if (!(c.m<-(class(m))) %in% c("lmer","lme"))  stop("Invalid m specified. \n")
@@ -37,7 +36,7 @@ else     #test for model with multiple var.comp.
   dA<-switch(class(mA),lme=extract.lmeDesign(mA),lmer=extract.lmerDesign(mA))
   d0<-switch(class(m0),lme=extract.lmeDesign(m0),lmer=extract.lmerDesign(m0))
   check4cor<-switch(class(mA),lme=any(as.matrix(mA$modelStruct$reStruct[[1]])!=diag(diag(as.matrix(mA$modelStruct$reStruct[[1]]))))
-                           ,lmer=any(dim(as.matrix(tail(mA@Omega, 1)[[1]]))!=c(1,1)))   #is cov(ranef) a diagonal matrix?
+                           ,lmer=any(dim(as.matrix(tail(mA@ST, 1)[[1]]))!=c(1,1)))   #is cov(ranef) a diagonal matrix?
   if(check4cor)
   {
     cat("Random effects not independent - covariance(s) set to 0 under the null hypothesis.\n Approximation not appropriate.\n")
@@ -52,24 +51,18 @@ else     #test for model with multiple var.comp.
   lambda<-tail(dA$lambda,1)
 }
 
-if((rlrt.obs!=0)||return.sample)
+if(rlrt.obs!=0)
 {
   sample<-RLRTSim(X,Z,sqrt.Sigma=chol(cov2cor(Vr)),lambda0=0, seed=seed, nsim=nsim,
                    log.grid.hi=log.grid.hi, log.grid.lo=log.grid.lo,
-                   gridlength=gridlength,...)[,2]
+                   gridlength=gridlength)
   p<-mean(rlrt.obs<sample)
 }
 else p=1
 
-if(print.p)
-{
-  ans<-matrix(c(lambda,rlrt.obs,p),1,3)
-  colnames(ans)<-c("variance ratio", "RLRT", "p-value")
-  rownames(ans)<-c(" ")
-  print(ans,digits=4)
-  cat(paste("      p-value based on",nsim, "simulated values. \n"))
-}
-if(return.sample) return(list(p=p,sample=sample))
-invisible(p)
+RVAL <- list(statistic = c(RLRT=rlrt.obs), p.value = p, 
+             method=paste('simulated finite sample distribution of RLRT.\n (p-value based on',nsim,'simulated values)'))
+    class(RVAL) <- "htest"
+    return(RVAL)
 }
 

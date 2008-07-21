@@ -8,8 +8,8 @@ and some restrictions of the fixed effects in a simple linear mixed model with k
 correlation structure of the random effect and i.i.d. errors.
 }
 \usage{
-exactLRT(m, m0, seed = NA, nsim = 5000, log.grid.hi = 8,
-    log.grid.lo = -10, gridlength = 200, print.p = TRUE, return.sample = FALSE)
+exactLRT(m, m0, seed = NA, nsim = 10000, log.grid.hi = 8,
+    log.grid.lo = -10, gridlength = 200)
 }
 \arguments{
   \item{m}{The fitted model under the alternative; of class \code{lme}, \code{lmer} or  \code{spm}}
@@ -18,10 +18,7 @@ exactLRT(m, m0, seed = NA, nsim = 5000, log.grid.hi = 8,
   \item{nsim}{ Number of values to simulate }
   \item{log.grid.hi}{ Lower value of the grid on the log scale. See \code{\link{exactLRT}}. }
   \item{log.grid.lo}{ Lower value of the grid on the log scale. See \code{\link{exactLRT}}. }
-  \item{gridlength}{ Length of the grid. See \code{\link{exactLRT}}.  }
-  \item{print.p}{print table with observed variance ratio, observed test statistic \eqn{-2\log LR} and
-                 p-value?}
-  \item{return.sample}{return simulated sample?}
+  \item{gridlength}{ Length of the grid. See \code{\link{LRTSim}}.  }
 }
 \details{
 The model under the alternative must be a linear mixed model
@@ -34,13 +31,13 @@ Var(b)=0}{H0: beta_1=beta0_1,..,beta_q=beta0_q, Var(b)=0}
 versus
 \deqn{H_A:\; \beta_{p+1-q}\neq \beta^0_{p+1-q}\;\mbox{or}\dots
 \mbox{or}\;\beta_{p}\neq \beta^0_{p}\;\;\mbox{or}\;Var(b)>0}{H0: beta_1 \neq beta0_1,..or..,beta_q \neq beta0_q ot Var(b)>0}
-The exact finite sample  distribution of the likelihood ratio test statistic
-that is simulated from was derived by Crainiceanu & Ruppert (2004).
+We use the exact finite sample distribution of the likelihood ratio test statistic
+as derived by Crainiceanu & Ruppert (2004).
 }
-\value{  If \code{return.sample = FALSE}, the p-value.
-Else a list with components
+\value{A list of class \code{htest} containing the following components: 
+  \item{statistic} the observed likelihood ratio
   \item{p}{p-value for the observed test statistic}
-  \item{sample}{the simulated sample of test statistics under the null}
+  \item{method}{a character string indicating what type of test was performed and how many values were simulated to determine the critical value} 
 }
 \references{Crainiceanu, C. and Ruppert, D. (2004)
              Likelihood ratio tests in linear mixed models with one variance component,
@@ -60,17 +57,5 @@ m0<-lm(distance ~ Sex + I(age - 11), data = Orthodont)
 summary(mA)
 summary(m0)
 exactLRT(m = mA, m0 = m0)
-
-
-library(SemiPar);
-data(janka);
-attach(janka);
-mA <- spm(I(log(hardness)) ~ f(dens, basis = "trunc.poly", degree = 2),
-    spar.method = "ML")
-m0 <- lm(I(log(hardness))~ dens)
-
-####test for linear trend vs. smooth alternative
-\dontrun{exactLRT(m = mA, m0 = m0)}
-
 }
 \keyword{ htest }

@@ -1,0 +1,3 @@
+useDynLib("RLRsim")
+export("exactLRT",  "exactRLRT", "extract.lmeDesign", "extract.lmerDesign", "LRTSim", "RLRTSim")
+
