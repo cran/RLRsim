@@ -2,7 +2,7 @@
 function(m)
 {
   X<-m@X
-  Z<-as.matrix(t(m@Zt))
+  Z<-t(as.matrix(m@Zt))
   Sigma.l<- lapply(.Call(lme4:::mer_ST_chol, m),crossprod) #Cov(b)/ Var(Error)
   k <- length(Sigma.l) #how many grouping factors
   q <- lapply(Sigma.l,NROW) #how many variance components in each grouping factor
