@@ -3,12 +3,12 @@ function(m,mA=NULL,m0=NULL, seed= NA, nsim=10000,
                    log.grid.hi=8, log.grid.lo=-10, gridlength=200)
 {
 if(class(m)=="spm") {m<-m$fit; class(m)<-"lme"}
-if (!(c.m<-(class(m))) %in% c("lmer","lme"))  stop("Invalid m specified. \n")
-if("REML"!=switch(c.m,lme=m$method,lmer=switch(m@status[2]+1,"ML","REML")))
+if (!(c.m<-(class(m))) %in% c("mer","lme"))  stop("Invalid m specified. \n")
+if("REML"!=switch(c.m,lme=m$method,mer=switch(m@dims['REML']+1,"ML","REML")))
 cat("Using restricted likelihood evaluated at ML estimators.\n Refit with method=\"REML\" for exact results.\n")
 
 
-d<-switch(c.m,lme=extract.lmeDesign(m),lmer=extract.lmerDesign(m))
+d<-switch(c.m,lme=extract.lmeDesign(m),mer=extract.lmerDesign(m))
 X<-d$X; Z<-d$Z; y<-d$y
 Vr<-d$Vr
 
@@ -33,22 +33,20 @@ if(is.null(mA) && is.null(m0)) #test for simple model
 }
 else     #test for model with multiple var.comp.
 {
-  dA<-switch(class(mA),lme=extract.lmeDesign(mA),lmer=extract.lmerDesign(mA))
-  d0<-switch(class(m0),lme=extract.lmeDesign(m0),lmer=extract.lmerDesign(m0))
-  check4cor<-switch(class(mA),lme=any(as.matrix(mA$modelStruct$reStruct[[1]])!=diag(diag(as.matrix(mA$modelStruct$reStruct[[1]]))))
-                           ,lmer=any(dim(as.matrix(tail(mA@ST, 1)[[1]]))!=c(1,1)))   #is cov(ranef) a diagonal matrix?
-  if(check4cor)
+  if(c.m == 'lme')
   {
-    cat("Random effects not independent - covariance(s) set to 0 under the null hypothesis.\n Approximation not appropriate.\n")
-    return(invisible())
+    if(any(mA$fixDF$terms!=m0$fixDF$terms)) 		stop("Fixed effects structures of mA and m0 not identical.\n REML-based inference not appropriate.")
+  } else {
+  		if(any(mA@X!=m0@X)) stop("Fixed effects structures of mA and m0 not identical.\n REML-based inference not appropriate.") 
   }
-  if(any(dim(dA$X)!=dim(d0$X)))
+
+  
+		if(diff(anova(mA,m0)$Df)>1)
   {
-    stop("Fixed effects structures of mA and m0 not identical.\n REML-based inference not appropriate.")
+    stop("Random effects not independent - covariance(s) set to 0 under the null hypothesis.\n Approximation not appropriate.\n")
   }
 
   rlrt.obs<-max(0,2*(logLik(mA,REML=TRUE)[1]-logLik(m0,REML=TRUE)[1]))
-  lambda<-tail(dA$lambda,1)
 }
 
 if(rlrt.obs!=0)

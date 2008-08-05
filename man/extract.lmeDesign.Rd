@@ -18,11 +18,11 @@ extract.lmerDesign(m)
   \item{X}{design of the fixed effects}
   \item{Z}{design of the random effects}
   \item{sigmasq}{variance of the residuals}
-  \item{lambda}{variance ratios of the random effects and the residuals}
+  \item{lambda}{ratios of the variances of the random effects and the variance of the residuals}
   \item{y}{response variable}
 }
 \author{Fabian Scheipl}
-\note{\code{extract.lmeDesign} is an adaptation of \code{mgcv::extract.lme.cov} by Simon Wood}
+\note{\code{extract.lmeDesign} is based on \code{mgcv::extract.lme.cov} by Simon Wood}
 \examples{
 library(nlme)
 d <- extract.lmeDesign(lme(distance ~ age + Sex, data = Orthodont, random = ~ 1))

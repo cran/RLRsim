@@ -4,9 +4,9 @@ function(m,m0, seed=NA, nsim=10000,
 {
 if(class(m0)!="lm") stop("m0 not an lm-object. \n")
 if(class(m)=="spm") {m<-m$fit; class(m)<-"lme"}
-if (!((c.m<-class(m)) %in% c("lmer","lme")))  stop("Invalid m specified. \n")
+if (!((c.m<-class(m)) %in% c("mer","lme")))  stop("Invalid m specified. \n")
 
-d<-switch(c.m,lme=extract.lmeDesign(m),lmer=extract.lmerDesign(m))
+d<-switch(c.m,lme=extract.lmeDesign(m),mer=extract.lmerDesign(m))
 X<-d$X; Z<-d$Z; y<-d$y
 Vr<-d$Vr
 
