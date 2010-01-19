@@ -35,7 +35,7 @@ We use the exact finite sample distribution of the likelihood ratio test statist
 as derived by Crainiceanu & Ruppert (2004).
 }
 \value{A list of class \code{htest} containing the following components: 
-  \item{statistic} the observed likelihood ratio
+  \item{statistic}{the observed likelihood ratio}
   \item{p}{p-value for the observed test statistic}
   \item{method}{a character string indicating what type of test was performed and how many values were simulated to determine the critical value} 
 }

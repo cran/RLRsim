@@ -7,7 +7,7 @@ function(m)
   k <- length(Sigma.l) #how many grouping factors
   q <- lapply(Sigma.l,NROW) #how many variance components in each grouping factor
   nlevel<-sapply(m@flist, function(x) length(levels(x))) #how many inner blocks in Sigma_i
-  Vr<-matrix(0,NCOL(Z),NCOL(Z)) #Cov(RanEf)/Var(Error)
+  Vr <- matrix(0,NCOL(Z),NCOL(Z)) #Cov(RanEf)/Var(Error)
   from <- 1        
 		for(i in 1:k)
       {

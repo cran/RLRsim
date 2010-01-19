@@ -12,12 +12,13 @@ correlation structure of the random effect and i.i.d. errors. They are usually c
 \usage{
 LRTSim(X, Z, q, sqrt.Sigma, seed = NA, nsim = 10000, log.grid.hi = 8,
        log.grid.lo=-10, gridlength=200)
-RLRTSim(X, Z, sqrt.Sigma, lambda0 = NA, seed = NA, nsim = 10000, use.approx=0,
+RLRTSim(X, Z, qrX, sqrt.Sigma, lambda0 = NA, seed = NA, nsim = 10000, use.approx=0,
        log.grid.hi=8, log.grid.lo=-10, gridlength=200)
 }
 \arguments{
   \item{X}{ The fixed effects design matrix of the model under the alternative }
   \item{Z}{ The random effects design matrix of the model under the alternative }
+  \item{qrX}{ The QR-decomposition of the fixed effects design matrix}
   \item{q}{ The number of parameters restrictions on the fixed effects (see Details)}
   \item{sqrt.Sigma}{  The upper triangular cholesky factor of  the correlation matrix of the random effect}
   \item{lambda0}{The value of the ratio of the variance of the random effect and the errors under the null}
@@ -46,7 +47,6 @@ limits of this grid on the log scale.
 These are just wrapper functions for the underlying C code.
 }
 \value{A vector with the simulated values of the (R)LRT under the null.}
-}
 \references{ Crainiceanu, C. and Ruppert, D. (2004)
              Likelihood ratio tests in linear mixed models with one variance component,
              \emph{Journal of the Royal Statistical Society: Series B},\bold{66},165--185.
@@ -56,7 +56,9 @@ These are just wrapper functions for the underlying C code.
              Diploma thesis.\\
              \url{http://www.statistik.lmu.de/~scheipl/downloads/DIPLOM.zip}.
 
-             
+			Scheipl, F., Greven, S. and Kuechenhoff, H (2008)
+			Size and power of tests for a zero random effect variance or polynomial regression in additive and linear mixed models,
+			\emph{Computational Statistics & Data Analysis}, \bold{52}(7):3283-3299	
 }
 \author{Fabian Scheipl}
 \seealso{ \code{\link{exactLRT}}, \code{\link{exactRLRT}} for tests}

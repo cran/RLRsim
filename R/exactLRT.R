@@ -3,7 +3,11 @@ function(m,m0, seed=NA, nsim=10000,
                    log.grid.hi=8, log.grid.lo=-10, gridlength=200)
 {
 if(class(m0)!="lm") stop("m0 not an lm-object. \n")
-if(class(m)=="spm") {m<-m$fit; class(m)<-"lme"}
+if(class(m)=="spm") {
+	m<-m$fit
+	class(m)<-"lme"
+}
+if(class(m)=="amer") class(m)<-"mer"
 if (!((c.m<-class(m)) %in% c("mer","lme")))  stop("Invalid m specified. \n")
 
 d<-switch(c.m,lme=extract.lmeDesign(m),mer=extract.lmerDesign(m))
@@ -30,7 +34,7 @@ cat("Using likelihood evaluated at REML estimators.\nPlease refit model with met
 lrt.obs<-max(0,2*logLik(m,REML=FALSE)[1]-2*logLik(m0,REML=FALSE)[1])
 
 
-sample<-LRTSim(X,Z,q,sqrt.Sigma=chol(cov2cor(Vr)), seed=seed, nsim=nsim,
+sample<-LRTSim(X,Z, q,sqrt.Sigma=chol(cov2cor(Vr)), seed=seed, nsim=nsim,
                    log.grid.hi=log.grid.hi, log.grid.lo=log.grid.lo,
                    gridlength=gridlength)
 if(quantile(sample,.9)==0)
