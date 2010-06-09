@@ -21,12 +21,11 @@ replicate(100, 	system.time((svd(X, nu = 0, nv = 0)$d)^2)[3])
 replicate(100, 	system.time((eigen(tcrossprod(X), symmetric= TRUE, only.values = TRUE)))[3])
 
 if(require(amer)){
-
-	nsubjects <- 2000
-	nmeasures <- 10
+	nsubjects <- 60
+	nmeasures <- 15
 	n <- nsubjects  * nmeasures
 	ntreatments <- 4
-	snr <- 5
+	snr <- 15
 	
 	x <- jitter(rep(seq(-1, 1, l=n/nsubjects), times=nsubjects))
 	subject <- gl(n=nsubjects, k=n/nsubjects, labels=1:nsubjects)
@@ -40,14 +39,14 @@ if(require(amer)){
 	
 	i <- 1
 	f_subj <- unlist(tapply(x, subject, function(x){
-						ff <- sqrt(i/10)*x + .5*dbeta((x+1)/2, 5, 2)  + dbeta((x+1)/2, 2*sqrt(i), i/2)
+						ff <- rnorm(1) + rnorm(1)*x + 2*sin(2*pi*x + i/10)
 						i <<- i+1
 						return(ff)
 					}))  
 	
 	
 	f_subj <- scale(f_subj)/2
-	f_treatment <- scale(f_treatment)
+	f_treatment <- 2*scale(f_treatment)
 	
 	xyplot(f_subj~x, groups=subject, type="l")
 	xyplot(f_treatment~x, groups=treatment)
@@ -57,11 +56,10 @@ if(require(amer)){
 	
 	y <-  f + sqrt(var(f)/snr)*rnorm(n)
 	d <- data.frame(y, x=scale(x), subject, treatment)
-	#all penalized smooths
-	(m1 <- gamm(y ~ s(x, by=treatment) + s(x, by=subject, k=10)))
-	(m0 <- gamm(y ~ s(x, by=treatment)))
-	
+		
 	(m1 <- amer(y ~ tp(x, by = treatment, k = 10) + tp(x, by = subject, k = 10, allPen = T), data = d))
+	plotF(m1, legendPos="none")
+	
 	(m0 <- amer(y ~ tp(x, by = treatment, k = 10), data = d))
 	(m <- amer(y ~ tp(x, by = subject, k = 10, allPen = T), data = d))
 	

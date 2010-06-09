@@ -41,7 +41,9 @@
 			if (any(mA@X != m0@X)) 
 				stop("Fixed effects structures of mA and m0 not identical.\n REML-based inference not appropriate.")
 		}
-		if (diff(anova(mA, m0)$df) > 1) {
+		## bug fix submitted by Andrzej Galecki 3/10/2009
+		DFx <- switch(c.m, lme = anova(mA,m0)$df, mer = anova(mA,m0)$Df) 
+		if (abs(diff(DFx)) > 1) {
 			stop("Random effects not independent - covariance(s) set to 0 under the null hypothesis.\n Approximation not appropriate.\n")
 		}
 		rlrt.obs <- max(0, 2 * (logLik(mA, REML = TRUE)[1] - 

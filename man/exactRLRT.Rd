@@ -54,7 +54,7 @@ A list of class \code{htest} containing the following components:
 												Size and power of tests for a zero random effect variance or polynomial regression in additive and linear mixed models.
 												\emph{Computational Statistics & Data Analysis}, \bold{52}(7):3283--3299.
 												}
-\author{ Fabian Scheipl }
+\author{Fabian Scheipl, bug fixes by Andrzej Galecki}
 
 \seealso{\code{\link{RLRTSim}} for the underlying simulation algorithm;
     \code{\link{exactLRT}} for likelihood based tests}
