@@ -21,9 +21,10 @@ function(m)
              Vr=Vr, #Cov(RanEf)/Var(Error)
              X=X,
              Z=Z,
-             sigmasq=attributes(VarCorr(m))$sc^2,
+             sigmasq=attributes(lme4::VarCorr(m))$sc^2,
              lambda=unique(diag(Vr)),
-             y=as.numeric(m@y)
+             y=as.numeric(m@y),
+			 k=k
            )
       )
 }

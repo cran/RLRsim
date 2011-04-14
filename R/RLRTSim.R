@@ -1,4 +1,4 @@
-'RLRTSim' <- function(X, Z, qrX, sqrt.Sigma, lambda0 = NA, 
+'RLRTSim' <- function(X, Z, qrX=qr(X), sqrt.Sigma, lambda0 = NA, 
 		seed = NA, nsim = 10000, use.approx = 0, log.grid.hi = 8, 
 		log.grid.lo = -10, gridlength = 200) {
 	if (is.na(lambda0)) 

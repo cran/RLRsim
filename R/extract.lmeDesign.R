@@ -1,7 +1,6 @@
 `extract.lmeDesign` <-
 function(m)
 {
-    require(mgcv)
     start.level = 1
     data<-m$data
     grps <- getGroups(m)
@@ -38,15 +37,20 @@ function(m)
             }
         }
     }
-X<-model.matrix(formula(m$call$fixed),data)
-y<-as.vector(matrix(m$residuals,nc=NCOL(m$residuals))[,NCOL(m$residuals)] +matrix(m$fitted,nc=NCOL(m$fitted))[,NCOL(m$fitted)])
-return(list(
+	X <- if(class(m$call$fixed) == "name"){
+		m$data$X
+	} else 	{
+		model.matrix(formula(m$call$fixed),data)
+	}
+	y<-as.vector(matrix(m$residuals,nc=NCOL(m$residuals))[,NCOL(m$residuals)] +matrix(m$fitted,nc=NCOL(m$fitted))[,NCOL(m$fitted)])
+	return(list(
              Vr=Vr, #Cov(RanEf)/Var(Error)
              X=X,
              Z=Z,
              sigmasq=m$sigma^2,
              lambda=unique(diag(Vr)),
-             y=y
+             y=y,
+			 k=n.levels
            )
       )
 }

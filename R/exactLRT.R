@@ -12,7 +12,14 @@ function(m, m0, seed = NA, nsim = 10000,
 		class(m) <- "mer"
 	if (!((c.m <- class(m)) %in% c("mer", "lme"))) 
 		stop("Invalid m specified. \n")
+	if(c.m == "mer"){
+		if(deparse(m@call[[1]])!="lmer")
+			stop("exactRLRT can only be used for mixed models for Gaussian responses.")
+	}
+		
 	d <- switch(c.m, lme = extract.lmeDesign(m), mer = extract.lmerDesign(m))
+	if(length(d$lambda) != 1 || d$k != 1) 
+		stop("multiple random effects in model - exactLRT needs 'm' with only a single random effect.")
 	X <- d$X
 	Z <- d$Z
 	y <- d$y
@@ -29,8 +36,9 @@ function(m, m0, seed = NA, nsim = 10000,
 		stop("No. of effects greater than n. Reduce model complexity.\n")
 	if (q == 0) 
 		cat("No restrictions on fixed effects. REML-based inference preferable. \n")
-	if ("ML" != switch(c.m, lme = m$method, lmer = switch(m@status[2] + 
-							1, "ML", "REML"))) {
+	method <- switch(c.m, lme = m$method, 
+			mer = ifelse(is.null(m@call$REML), "REML", ifelse(m@call$REML, "REML", "ML")))
+	if (method != "ML") {
 		cat("Using likelihood evaluated at REML estimators.\nPlease refit model with method=\"ML\" for exact results.\n")
 	}
 	#observed value of the LRT

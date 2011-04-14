@@ -65,9 +65,8 @@ mA <- lmer(Reaction ~ I(Days-4.5) + (1|Subject) + (0 + I(Days-4.5)|Subject), sle
 m0 <- update(mA, . ~ . - (0 + I(Days-4.5)|Subject))
 m.slope  <- update(mA, . ~ . - (1|Subject))
 #test for subject specific slopes:
-\dontrun{exactRLRT(m.slope, mA, m0)}
+exactRLRT(m.slope, mA, m0)
 
-detach(package:lme4) #avoid conflicts
 library(mgcv)
 data(trees)
 #test quadratic trend vs. smooth alternative

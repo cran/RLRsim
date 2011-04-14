@@ -7,9 +7,17 @@
 	if (class(m) == "amer") class(m) <- "mer"
 	if (!(c.m <- (class(m))) %in% c("mer", "lme")) 
 		stop("Invalid m specified. \n")
-	if ("REML" != switch(c.m, lme = m$method, mer = switch(m@dims["REML"] + 
+	if(c.m == "mer"){
+		if(deparse(m@call[[1]])!="lmer")
+			stop("exactRLRT can only be used for mixed models for Gaussian responses.")
+	}
+	if ("REML" != switch(c.m, 
+			lme = m$method, mer = switch(m@dims["REML"] + 
 							1, "ML", "REML"))) 
 		cat("Using restricted likelihood evaluated at ML estimators.\n Refit with method=\"REML\" for exact results.\n")
+	
+	
+	
 	d <- switch(c.m, lme = extract.lmeDesign(m), mer = extract.lmerDesign(m))
 	X <- d$X
 	qrX <- qr(X)
@@ -20,7 +28,8 @@
 	n <- nrow(X)
 	p <- ncol(X)
 	if (is.null(mA) && is.null(m0)) {
-		if(length(d$lambda)!=1) stop("multiple random effects in model - exactRLRT needs 'm' with only a single random effect.")
+		if(length(d$lambda) != 1 || d$k != 1) 
+			stop("multiple random effects in model - exactRLRT needs 'm' with only a single random effect.")
 		#2*restricted ProfileLogLik under H0: lambda=0
 		res <- qr.resid(qrX, y)
 		R <- qr.R(qrX)
@@ -44,7 +53,7 @@
 		## bug fix submitted by Andrzej Galecki 3/10/2009
 		DFx <- switch(c.m, lme = anova(mA,m0)$df, mer = anova(mA,m0)$Df) 
 		if (abs(diff(DFx)) > 1) {
-			stop("Random effects not independent - covariance(s) set to 0 under the null hypothesis.\n Approximation not appropriate.\n")
+			stop("Random effects not independent - covariance(s) set to 0 under the null hypothesis.\n exactRLRT can only test a single variance.\n")
 		}
 		rlrt.obs <- max(0, 2 * (logLik(mA, REML = TRUE)[1] - 
 							logLik(m0, REML = TRUE)[1]))
