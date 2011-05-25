@@ -1,57 +1,62 @@
 `extract.lmeDesign` <-
-function(m)
+		function(m)
 {
-    start.level = 1
-    data<-m$data
-    grps <- getGroups(m)
-    n <- length(grps)
-    X <- list()
-    grp.dims <- m$dims$ncol
-    Zt <- model.matrix(m$modelStruct$reStruct, data)
-    cov <- as.matrix(m$modelStruct$reStruct)
-    i.col <- 1
-    n.levels <- length(m$groups)
-    Z <- matrix(0, n, 0)
-    if (start.level <= n.levels) {
-        for (i in 1:(n.levels - start.level + 1)) {
-            if(length(levels(m$groups[[n.levels-i+1]]))!=1)
-            {
-            X[[1]] <- model.matrix(~m$groups[[n.levels - i +
-                1]] - 1, contrasts.arg = c("contr.treatment",
-                "contr.treatment"))
-            }
-            else X[[1]]<-matrix(1)
-            X[[2]] <- as.matrix(Zt[, i.col:(i.col + grp.dims[i] -
-                1)])
-            i.col <- i.col + grp.dims[i]
-            Z <- cbind(tensor.prod.model.matrix(X),Z)
-        }
-        Vr <- matrix(0, ncol(Z), ncol(Z))
-        start <- 1
-        for (i in 1:(n.levels - start.level + 1)) {
-            k <- n.levels - i + 1
-            for (j in 1:m$dims$ngrps[i]) {
-                stop <- start + ncol(cov[[k]]) - 1
-                 Vr[ncol(Z)+1-(stop:start),ncol(Z)+1-(stop:start)] <- cov[[k]]
-                 start <- stop + 1
-            }
-        }
-    }
-	X <- if(class(m$call$fixed) == "name"){
-		m$data$X
-	} else 	{
-		model.matrix(formula(m$call$fixed),data)
+	start.level = 1
+	
+	data <- if(any(!complete.cases(m$data))){
+				warning("Removing incomplete cases from supplied data.") 
+				m$data[complete.cases(m$data),]
+			} else m$data
+	grps <- getGroups(m)
+	n <- length(grps)
+	X <- list()
+	grp.dims <- m$dims$ncol
+	Zt <- model.matrix(m$modelStruct$reStruct, data)
+	cov <- as.matrix(m$modelStruct$reStruct)
+	i.col <- 1
+	n.levels <- length(m$groups)
+	Z <- matrix(0, n, 0)
+	if (start.level <= n.levels) {
+		for (i in 1:(n.levels - start.level + 1)) {
+			if(length(levels(m$groups[[n.levels-i+1]]))!=1)
+			{
+				X[[1]] <- model.matrix(~m$groups[[n.levels - i +
+										1]] - 1, contrasts.arg = c("contr.treatment",
+								"contr.treatment"))
+			}
+			else X[[1]]<-matrix(1)
+			X[[2]] <- as.matrix(Zt[, i.col:(i.col + grp.dims[i] -
+										1)])
+			i.col <- i.col + grp.dims[i]
+			Z <- cbind(tensor.prod.model.matrix(X),Z)
+		}
+		Vr <- matrix(0, ncol(Z), ncol(Z))
+		start <- 1
+		for (i in 1:(n.levels - start.level + 1)) {
+			k <- n.levels - i + 1
+			for (j in 1:m$dims$ngrps[i]) {
+				stop <- start + ncol(cov[[k]]) - 1
+				Vr[ncol(Z)+1-(stop:start),ncol(Z)+1-(stop:start)] <- cov[[k]]
+				start <- stop + 1
+			}
+		}
 	}
-	y<-as.vector(matrix(m$residuals,nc=NCOL(m$residuals))[,NCOL(m$residuals)] +matrix(m$fitted,nc=NCOL(m$fitted))[,NCOL(m$fitted)])
+	X <- if(class(m$call$fixed) == "name"){
+				m$data$X
+			} else 	{
+				model.matrix(formula(m$call$fixed),data)
+			}
+	y<-as.vector(matrix(m$residuals,nc=NCOL(m$residuals))[,NCOL(m$residuals)] + 
+					matrix(m$fitted,nc=NCOL(m$fitted))[,NCOL(m$fitted)])
 	return(list(
-             Vr=Vr, #Cov(RanEf)/Var(Error)
-             X=X,
-             Z=Z,
-             sigmasq=m$sigma^2,
-             lambda=unique(diag(Vr)),
-             y=y,
-			 k=n.levels
-           )
-      )
+					Vr=Vr, #Cov(RanEf)/Var(Error)
+					X=X,
+					Z=Z,
+					sigmasq=m$sigma^2,
+					lambda=unique(diag(Vr)),
+					y=y,
+					k=n.levels
+			)
+	)
 }
 

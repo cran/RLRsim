@@ -8,15 +8,14 @@
 	if (!(c.m <- (class(m))) %in% c("mer", "lme")) 
 		stop("Invalid m specified. \n")
 	if(c.m == "mer"){
-		if(deparse(m@call[[1]])!="lmer")
+		if(length(m@muEta))
 			stop("exactRLRT can only be used for mixed models for Gaussian responses.")
 	}
 	if ("REML" != switch(c.m, 
-			lme = m$method, mer = switch(m@dims["REML"] + 
-							1, "ML", "REML"))) 
-		cat("Using restricted likelihood evaluated at ML estimators.\n Refit with method=\"REML\" for exact results.\n")
-	
-	
+			lme = m$method, 
+			mer = switch(m@dims["REML"] + 1, "ML", "REML"))){
+		cat("Using restricted likelihood evaluated at ML estimators.\n Refit with method=\"REML\" for exact results.\n")	
+	}
 	
 	d <- switch(c.m, lme = extract.lmeDesign(m), mer = extract.lmerDesign(m))
 	X <- d$X

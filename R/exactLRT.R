@@ -1,5 +1,5 @@
 `exactLRT` <-
-function(m, m0, seed = NA, nsim = 10000, 
+		function(m, m0, seed = NA, nsim = 10000, 
 				log.grid.hi = 8, log.grid.lo = -10, gridlength = 200) 
 {
 	if (class(m0) != "lm") 
@@ -13,10 +13,10 @@ function(m, m0, seed = NA, nsim = 10000,
 	if (!((c.m <- class(m)) %in% c("mer", "lme"))) 
 		stop("Invalid m specified. \n")
 	if(c.m == "mer"){
-		if(deparse(m@call[[1]])!="lmer")
-			stop("exactRLRT can only be used for mixed models for Gaussian responses.")
+		if(length(m@muEta))
+			stop("exactLRT can only be used for mixed models for Gaussian responses.")
 	}
-		
+	
 	d <- switch(c.m, lme = extract.lmeDesign(m), mer = extract.lmerDesign(m))
 	if(length(d$lambda) != 1 || d$k != 1) 
 		stop("multiple random effects in model - exactLRT needs 'm' with only a single random effect.")
