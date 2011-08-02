@@ -7,7 +7,7 @@
 				warning("Removing incomplete cases from supplied data.") 
 				m$data[complete.cases(m$data),]
 			} else m$data
-	grps <- getGroups(m)
+	grps <- nlme:::getGroups(m)
 	n <- length(grps)
 	X <- list()
 	grp.dims <- m$dims$ncol
@@ -28,7 +28,7 @@
 			X[[2]] <- as.matrix(Zt[, i.col:(i.col + grp.dims[i] -
 										1)])
 			i.col <- i.col + grp.dims[i]
-			Z <- cbind(tensor.prod.model.matrix(X),Z)
+			Z <- cbind(mgcv:::tensor.prod.model.matrix(X),Z)
 		}
 		Vr <- matrix(0, ncol(Z), ncol(Z))
 		start <- 1

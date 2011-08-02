@@ -3,7 +3,7 @@
 \alias{extract.lmeDesign}
 \title{Extract the Design of a linear mixed model}
 \description{
- These functions extract various elements of the design of a fitted \code{lme}- or \code{lmer}-Object.
+ These functions extract various elements of the design of a fitted \code{lme}- or \code{mer}-Object.
  They are called by \code{exactRLRT} and \code{exactLRT}.
 }
 \usage{
@@ -11,7 +11,7 @@ extract.lmeDesign(m)
 extract.lmerDesign(m)
 }
 \arguments{
-  \item{m}{fitted \code{lme}- or \code{lmer}-Object }
+  \item{m}{fitted \code{lme}- or \code{mer}-Object }
 }
 \value{a list with components
   \item{Vr}{estimated covariance of the random effects divided by the estimated variance of the residuals}
