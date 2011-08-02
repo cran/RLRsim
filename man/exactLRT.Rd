@@ -44,7 +44,7 @@ as derived by Crainiceanu & Ruppert (2004).
 \references{Crainiceanu, C. and Ruppert, D. (2004)
              Likelihood ratio tests in linear mixed models with one variance component,
              \emph{Journal of the Royal Statistical Society: Series B},\bold{66},165--185.}
-\author{ Fabian Scheipl }
+\author{Fabian Scheipl, updates for \pkg{lme4.0}-compatibility by Ben Bolker}
 
 \seealso{\code{\link{LRTSim}} for the underlying simulation algorithm;
    \code{\link{RLRTSim}} and \code{\link{exactRLRT}} for restricted likelihood based tests}

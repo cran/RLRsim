@@ -10,14 +10,14 @@
 	}
 	if (class(m) == "amer") 
 		class(m) <- "mer"
-	if (!((c.m <- class(m)) %in% c("mer", "lme"))) 
+	if (!((c.m <- class(m)) %in% c("mer", "lme", "lmerMod"))) 
 		stop("Invalid m specified. \n")
 	if(c.m == "mer"){
 		if(length(m@muEta))
 			stop("exactLRT can only be used for mixed models for Gaussian responses.")
 	}
 	
-	d <- switch(c.m, lme = extract.lmeDesign(m), mer = extract.lmerDesign(m))
+	d <- switch(c.m, lme = extract.lmeDesign(m), mer = extract.lmerDesign(m), lmerMod=extract.lmerModDesign(m))
 	if(length(d$lambda) != 1 || d$k != 1) 
 		stop("multiple random effects in model - exactLRT needs 'm' with only a single random effect.")
 	X <- d$X

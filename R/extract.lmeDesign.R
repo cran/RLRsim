@@ -46,8 +46,8 @@
 			} else 	{
 				model.matrix(formula(m$call$fixed),data)
 			}
-	y<-as.vector(matrix(m$residuals,nc=NCOL(m$residuals))[,NCOL(m$residuals)] + 
-					matrix(m$fitted,nc=NCOL(m$fitted))[,NCOL(m$fitted)])
+	y<-as.vector(matrix(m$residuals, ncol=NCOL(m$residuals))[,NCOL(m$residuals)] + 
+					matrix(m$fitted, ncol=NCOL(m$fitted))[,NCOL(m$fitted)])
 	return(list(
 					Vr=Vr, #Cov(RanEf)/Var(Error)
 					X=X,

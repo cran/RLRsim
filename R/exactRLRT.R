@@ -5,7 +5,7 @@
 		class(m) <- "lme"
 	}
 	if (class(m) == "amer") class(m) <- "mer"
-	if (!(c.m <- (class(m))) %in% c("mer", "lme")) 
+	if (!(c.m <- (class(m))) %in% c("mer", "lme", "lmerMod")) 
 		stop("Invalid m specified. \n")
 	if(c.m == "mer"){
 		if(length(m@muEta))
@@ -13,11 +13,12 @@
 	}
 	if ("REML" != switch(c.m, 
 			lme = m$method, 
-			mer = switch(m@dims["REML"] + 1, "ML", "REML"))){
+			mer = switch(m@dims["REML"] + 1, "ML", "REML"),
+            lmerMod = if (isREML(m)) "REML" else "ML")){
 		cat("Using restricted likelihood evaluated at ML estimators.\n Refit with method=\"REML\" for exact results.\n")	
 	}
 	
-	d <- switch(c.m, lme = extract.lmeDesign(m), mer = extract.lmerDesign(m))
+	d <- switch(c.m, lme = extract.lmeDesign(m), mer = extract.lmerDesign(m), lmerMod = extract.lmerModDesign(m))
 	X <- d$X
 	qrX <- qr(X)
 	Z <- d$Z
@@ -41,16 +42,23 @@
 		lambda <- d$lambda
 	}
 	else {
+        nonidentfixmsg <- "Fixed effects structures of mA and m0 not identical.\n REML-based inference not appropriate."
 		if (c.m == "lme") {
 			if (any(mA$fixDF$terms != m0$fixDF$terms)) 
-				stop("Fixed effects structures of mA and m0 not identical.\n REML-based inference not appropriate.")
-		}
-		else {
-			if (any(mA@X != m0@X)) 
-				stop("Fixed effects structures of mA and m0 not identical.\n REML-based inference not appropriate.")
+				stop(nonidentfixmsg)
+		} else {
+            if (c.m == "mer") {
+                if (any(mA@X != m0@X)) 
+                    stop(nonidentfixmsg)
+            } else {
+                if (c.m == "lmerMod") {
+                    if (any(getME(mA,"X") != getME(m0,"X")))
+                        stop(nonidentfixmsg)
+                }
+            }     
 		}
 		## bug fix submitted by Andrzej Galecki 3/10/2009
-		DFx <- switch(c.m, lme = anova(mA,m0)$df, mer = anova(mA,m0)$Df) 
+		DFx <- switch(c.m, lme = anova(mA,m0)$df, mer = anova(mA,m0)$Df, lmerMod=anova(mA,m0)$Df) 
 		if (abs(diff(DFx)) > 1) {
 			stop("Random effects not independent - covariance(s) set to 0 under the null hypothesis.\n exactRLRT can only test a single variance.\n")
 		}
