@@ -46,7 +46,8 @@ limits of this grid on the log scale.
 \code{gridlength} is the number of points on the grid.\\
 These are just wrapper functions for the underlying C code.
 }
-\value{A vector with the simulated values of the (R)LRT under the null.}
+\value{A vector containig the the simulated values of the (R)LRT under the null, 
+ with attribute 'lambda' giving \eqn{\arg\min(f(\lambda))} (see Crainiceanu, Ruppert (2004)) for the simulations.}
 \references{ Crainiceanu, C. and Ruppert, D. (2004)
              Likelihood ratio tests in linear mixed models with one variance component,
              \emph{Journal of the Royal Statistical Society: Series B},\bold{66},165--185.
@@ -67,7 +68,7 @@ library(lme4)
 g <- rep(1:10, e = 10)
 x <- rnorm(100)
 y <- 0.1 * x + rnorm(100)
-m <- lmer(y ~ x + (1|g), method="ML")
+m <- lmer(y ~ x + (1|g), REML=FALSE)
 m0 <- lm(y ~ 1)
 
 (obs.LRT <- 2*(logLik(m)-logLik(m0)))

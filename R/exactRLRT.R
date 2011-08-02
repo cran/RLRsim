@@ -66,7 +66,7 @@
 	else p = 1
 	RVAL <- list(statistic = c(RLRT = rlrt.obs), p.value = p, 
 			method = paste("simulated finite sample distribution of RLRT.\n (p-value based on", 
-					nsim, "simulated values)"))
+					nsim, "simulated values)"), sample=sample)
 	class(RVAL) <- "htest"
 	return(RVAL)
 } 

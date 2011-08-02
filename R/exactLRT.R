@@ -37,7 +37,7 @@
 	if (q == 0) 
 		cat("No restrictions on fixed effects. REML-based inference preferable. \n")
 	method <- switch(c.m, lme = m$method, 
-			mer = ifelse(is.null(m@call$REML), "REML", ifelse(m@call$REML, "REML", "ML")))
+			mer = ifelse(is.null(m@call$REML), "REML", ifelse(eval(m@call$REML), "REML", "ML")))
 	if (method != "ML") {
 		cat("Using likelihood evaluated at REML estimators.\nPlease refit model with method=\"ML\" for exact results.\n")
 	}
@@ -51,8 +51,10 @@
 		(cat("Warning: Null distribution has", mean(sample == 
 											0), "mass at zero.\n"))
 	p <- mean(lrt.obs < sample)
-	RVAL <- list(statistic = c(LRT = lrt.obs), p.value = p, method = paste("simulated finite sample distribution of LRT. (p-value based on", 
-					nsim, "simulated values)"))
+	RVAL <- list(statistic = c(LRT = lrt.obs), 
+            p.value = p, 
+            method = paste("simulated finite sample distribution of LRT. (p-value based on", 
+					nsim, "simulated values)"), sample=sample)
 	class(RVAL) <- "htest"
 	return(RVAL)
 } 

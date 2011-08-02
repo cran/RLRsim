@@ -37,7 +37,9 @@ as derived by Crainiceanu & Ruppert (2004).
 \value{A list of class \code{htest} containing the following components: 
   \item{statistic}{the observed likelihood ratio}
   \item{p}{p-value for the observed test statistic}
-  \item{method}{a character string indicating what type of test was performed and how many values were simulated to determine the critical value} 
+  \item{method}{a character string indicating what type of test was 
+   performed and how many values were simulated to determine the critical value}
+   \item{sample}{the samples from the null distribution returned by \code{\link{RLRTSim}}} 
 }
 \references{Crainiceanu, C. and Ruppert, D. (2004)
              Likelihood ratio tests in linear mixed models with one variance component,

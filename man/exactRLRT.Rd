@@ -43,14 +43,16 @@ A list of class \code{htest} containing the following components:
   \item{statistic}{the observed restricted likelihood ratio}
   \item{p}{p-value for the observed test statistic}
   \item{method}{a character string indicating what type of test was performed and how many values were simulated to determine the critical value} 
-
+  \item{sample}{the samples from the null distribution returned by \code{\link{RLRTSim}}}
 }
 \references{Crainiceanu, C. and Ruppert, D. (2004)
              Likelihood ratio tests in linear mixed models with one variance component,
              \emph{Journal of the Royal Statistical Society: Series B},\bold{66},165--185.
+             
             Greven, S., Crainiceanu, C., Kuechenhoff, H., and Peters, A. (2008)
             Restricted Likelihood Ratio Testing for Zero Variance Components in Linear Mixed Models,
             \emph{Journal of Computational and Graphical Statistics}, \bold{17} (4): 870--891.
+            
             Scheipl, F., Greven, S. and Kuechenhoff, H. (2008)
 			Size and power of tests for a zero random effect variance or polynomial regression in additive and linear mixed models.
 			\emph{Computational Statistics & Data Analysis}, \bold{52}(7):3283--3299.
