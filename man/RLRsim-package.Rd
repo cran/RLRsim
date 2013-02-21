@@ -13,12 +13,14 @@ lme4::lmer(), mgcv::gamm() and SemiPar:spm().
 \tabular{ll}{
 Package: \tab RLRsim\cr
 Type: \tab Package\cr
-Version: \tab 1.0\cr
-Date: \tab 2007-01-09\cr
+Version: \tab  2.1-0\cr
+Date: \tab 2013-02-21\cr
 License: \tab GPL \cr
 }
 }
 \author{
 Maintainer: Fabian Scheipl <fabian.scheipl@stat.uni-muenchen.de>
+
+Ben Bolker
 }
 \keyword{ package }

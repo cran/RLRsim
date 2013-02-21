@@ -9,7 +9,9 @@ correlation structure of the random effect and i.i.d. errors.
 }
 \usage{
 exactLRT(m, m0, seed = NA, nsim = 10000, log.grid.hi = 8,
-    log.grid.lo = -10, gridlength = 200)
+    log.grid.lo = -10, gridlength = 200, 
+    parallel = c("no", "multicore", "snow"), 
+    ncpus = 1L, cl = NULL)
 }
 \arguments{
   \item{m}{The fitted model under the alternative; of class \code{lme}, \code{lmer} or  \code{spm}}
@@ -19,6 +21,9 @@ exactLRT(m, m0, seed = NA, nsim = 10000, log.grid.hi = 8,
   \item{log.grid.hi}{ Lower value of the grid on the log scale. See \code{\link{exactLRT}}. }
   \item{log.grid.lo}{ Lower value of the grid on the log scale. See \code{\link{exactLRT}}. }
   \item{gridlength}{ Length of the grid. See \code{\link{LRTSim}}.  }
+  \item{parallel}{ The type of parallel operation to be used (if any). If missing, the default is "no parallelization").}
+  \item{ncpus}{integer: number of processes to be used in parallel operation: typically one would chose this to the number of available CPUs. Defaults to 1, i.e., no parallelization.} 
+  \item{cl}{An optional parallel or snow cluster for use if parallel = "snow". If not supplied, a cluster on the   local machine is created for the duration of the call.}
 }
 \details{
 The model under the alternative must be a linear mixed model

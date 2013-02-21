@@ -11,9 +11,13 @@ correlation structure of the random effect and i.i.d. errors. They are usually c
 \code{exactLRT} or \code{exactRLRT}.}
 \usage{
 LRTSim(X, Z, q, sqrt.Sigma, seed = NA, nsim = 10000, log.grid.hi = 8,
-       log.grid.lo=-10, gridlength=200)
+       log.grid.lo=-10, gridlength=200,
+       parallel = c("no", "multicore", "snow"), 
+       ncpus = 1L, cl = NULL)
 RLRTSim(X, Z, qrX, sqrt.Sigma, lambda0 = NA, seed = NA, nsim = 10000, use.approx=0,
-       log.grid.hi=8, log.grid.lo=-10, gridlength=200)
+       log.grid.hi=8, log.grid.lo=-10, gridlength=200,
+       parallel = c("no", "multicore", "snow"), 
+       ncpus = 1L, cl = NULL)
 }
 \arguments{
   \item{X}{ The fixed effects design matrix of the model under the alternative }
@@ -24,11 +28,13 @@ RLRTSim(X, Z, qrX, sqrt.Sigma, lambda0 = NA, seed = NA, nsim = 10000, use.approx
   \item{lambda0}{The value of the ratio of the variance of the random effect and the errors under the null}
   \item{seed}{ Specify a seed for \code{set.seed}}
   \item{nsim}{ Number of values to simulate }
-  \item{use.approx}{If 0, the exact distribution is simulated. If between 0 and 1, only the largest
-  eigenvalues whose sum represents at least \code{use.approx}*(sum of all eigenvalues) are used.}
+  \item{use.approx}{If 0, the exact distribution is simulated. If between 0 and 1, only the largest eigenvalues whose sum represents at least \code{use.approx}*(sum of all eigenvalues) are used.}
   \item{log.grid.hi}{ Lower value of the grid on the log scale. See \bold{Details}}
   \item{log.grid.lo}{ Lower value of the grid on the log scale. See \bold{Details}}
   \item{gridlength}{ Length of the grid for the grid search over lambda. See \bold{Details}}
+  \item{parallel}{ The type of parallel operation to be used (if any). If missing, the default is "no parallelization").}
+  \item{ncpus}{integer: number of processes to be used in parallel operation: typically one would chose this to the number of available CPUs. Defaults to 1, i.e., no parallelization.} 
+  \item{cl}{An optional parallel or snow cluster for use if parallel = "snow". If not supplied, a cluster on the   local machine is created for the duration of the call.}
 }
 \details{
 The model under the alternative must be a linear mixed model
@@ -61,7 +67,7 @@ These are just wrapper functions for the underlying C code.
 			Size and power of tests for a zero random effect variance or polynomial regression in additive and linear mixed models,
 			\emph{Computational Statistics & Data Analysis}, \bold{52}(7):3283-3299	
 }
-\author{Fabian Scheipl}
+\author{Fabian Scheipl; parallelization code adapted from \code{boot} package}
 \seealso{ \code{\link{exactLRT}}, \code{\link{exactRLRT}} for tests}
 \examples{
 library(lme4)
@@ -72,8 +78,8 @@ m <- lmer(y ~ x + (1|g), REML=FALSE)
 m0 <- lm(y ~ 1)
 
 (obs.LRT <- 2*(logLik(m)-logLik(m0)))
-X <- m@X
-Z <- t(as.matrix(m@Zt))
+X <- getME(m,"X")
+Z <- t(as.matrix(getME(m,"Zt")))
 sim.LRT <- LRTSim(X, Z, 1, diag(10))
 (pval <- mean(sim.LRT > obs.LRT))
 }
