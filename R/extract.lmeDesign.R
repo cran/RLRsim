@@ -41,10 +41,10 @@
 			}
 		}
 	}
-	X <- if(class(m$call$fixed) == "name"){
+	X <- if(class(m$call$fixed) == "name" &&  !is.null(m$data$X)){
 				m$data$X
 			} else 	{
-				model.matrix(formula(m$call$fixed),data)
+				model.matrix(formula(eval(m$call$fixed)),data)
 			}
 	y<-as.vector(matrix(m$residuals, ncol=NCOL(m$residuals))[,NCOL(m$residuals)] + 
 					matrix(m$fitted, ncol=NCOL(m$fitted))[,NCOL(m$fitted)])

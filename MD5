@@ -1,10 +1,10 @@
-4d042d0ac0be807ce9501ded3769e20f *DESCRIPTION
+b4314be59d9b78ed971b7d3e9832b0ec *DESCRIPTION
 5ae6d10de827f35fe95ddf52592ca47c *NAMESPACE
 b29fe8f96fe0d2f96939083c30c8f793 *R/LRTSim.R
 474d8bc5561131b62282bc03115c0cac *R/RLRTSim.R
 a518ebd37326232a23665f513111c32d *R/exactLRT.R
 039a4ea3736c44408f6e4f1cb40524f3 *R/exactRLRT.R
-6386088d62f0fe182f187ca0a0ae742a *R/extract.lmeDesign.R
+96bbfa10065e18144176b3be93db24c7 *R/extract.lmeDesign.R
 08e0d889b377ce43bca682146b78357d *R/extract.lmerDesign.R
 44663a0705f4c7e74d13a4d62a938c3f *R/extract.lmerModDesign.R
 d41d8cd98f00b204e9800998ecf8427e *TODO
@@ -13,5 +13,5 @@ d41d8cd98f00b204e9800998ecf8427e *TODO
 2802d0bed9a68cafe52b39ca1e28e6d7 *man/RLRsim-package.Rd
 d0c3ab8570d45943b3936cae1d942e08 *man/exactLRT.Rd
 ee66e0a3c9eff6d37ae300d14cd01beb *man/exactRLRT.Rd
-864978a660557cf6efa592e8e3a3bdf0 *man/extract.lmeDesign.Rd
+28a7929bd169f04eb3ede97359e4f57d *man/extract.lmeDesign.Rd
 626b5e5f2a33bb92a3d66a842a2f3c55 *src/RLRsim.cpp

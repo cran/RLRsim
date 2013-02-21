@@ -23,7 +23,7 @@ extract.lmerModDesign(m)
   \item{lambda}{ratios of the variances of the random effects and the variance of the residuals}
   \item{y}{response variable}
 }
-\author{Fabian Scheipl, \code{extract.lmerModDesign} supplied by Ben Bolker}
+\author{Fabian Scheipl, \code{extract.lmerModDesign} supplied by Ben Bolker. Many thanks to Andrzej Galecki and Tomasz Burzykowski for bug fixes.}
 \note{\code{extract.lmeDesign} is based on \code{mgcv::extract.lme.cov} by Simon Wood}
 \examples{
 library(nlme)
