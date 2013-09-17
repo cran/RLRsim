@@ -1,5 +1,5 @@
 `extract.lmerModDesign` <- function(m)
-  {
+{
     X<-getME(m,"X")
     Z<-as.matrix(getME(m,"Z"))
     v <- VarCorr(m)
@@ -14,20 +14,20 @@
     from <- 1
     for(i in 1:k)
     {
-      ii<-nlevel[i]
-      inner.block<-as.matrix(Sigma.l[[i]])
-      to<-from-1+ii*NCOL(inner.block)
-      Vr[from:to,from:to]<- inner.block %x% diag(ii)
-      from<-to+1
+        ii<-nlevel[i]
+        inner.block<-as.matrix(Sigma.l[[i]])
+        to<-from-1+ii*NCOL(inner.block)
+        Vr[from:to,from:to]<- inner.block %x% diag(ii)
+        from<-to+1
     }
     return(list(
-      Vr=Vr, #Cov(RanEf)/Var(Error)
-      X=X,
-      Z=Z,
-      sigmasq=resvar,
-      lambda=unique(diag(Vr)),
-      y=model.response(model.frame(m)),
-      k=k
+        Vr=Vr, #Cov(RanEf)/Var(Error)
+        X=X,
+        Z=Z,
+        sigmasq=resvar,
+        lambda=unique(diag(Vr)),
+        y=model.response(model.frame(m)),
+        k=k
     ))
-  }
+}
 
