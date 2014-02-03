@@ -78,6 +78,7 @@
 #' (pval <- mean(sim.LRT > obs.LRT))
 #' 
 #' @export LRTSim
+#' @useDynLib RLRsim
 `LRTSim` <- function(X,Z,q, sqrt.Sigma, seed=NA, nsim=10000,
            log.grid.hi=8, log.grid.lo=-10, gridlength=200,
            parallel = c("no", "multicore", "snow"), 

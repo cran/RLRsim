@@ -1,5 +1,6 @@
-useDynLib(RLRsim)
 export(LRTSim)
+export(RLRTSim)
 export(exactLRT)
 export(exactRLRT)
 export(extract.lmeDesign)
+useDynLib(RLRsim)
