@@ -1,3 +1,5 @@
-useDynLib("RLRsim")
-export("exactLRT",  "exactRLRT", "extract.lmeDesign", "extract.lmerModDesign", "LRTSim", "RLRTSim")
-
+useDynLib(RLRsim)
+export(LRTSim)
+export(exactLRT)
+export(exactRLRT)
+export(extract.lmeDesign)

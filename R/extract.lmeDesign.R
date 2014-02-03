@@ -47,6 +47,7 @@
         Z <- matrix(0, n, 0)
         if (start.level <= n.levels) {
             for (i in 1:(n.levels - start.level + 1)) {
+                browser()
                 if(length(levels(m$groups[[n.levels-i+1]]))!=1)
                 {
                     X[[1]] <- model.matrix(~m$groups[[n.levels - i +
@@ -54,7 +55,7 @@
                                            contrasts.arg = c("contr.treatment",
                                                              "contr.treatment"))
                 }
-                else X[[1]]<-matrix(1)
+                else X[[1]]<-matrix(1, n, 1)
                 X[[2]] <- as.matrix(Zt[, i.col:(i.col + grp.dims[i] -
                                                     1)])
                 i.col <- i.col + grp.dims[i]

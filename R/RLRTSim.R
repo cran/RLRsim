@@ -138,8 +138,10 @@
                 .C("RLRsim", p = as.integer(p), k = as.integer(K), 
                    n = as.integer(n), s = as.integer(nsim.), g = as.integer(gridlength), 
                    q = as.integer(0), mu = as.double(mu), lambda = as.double(lambda.grid), 
-                   lambda0 = as.double(lambda0), xi = as.double(mu), REML = as.logical(TRUE), 
-                   res = double(nsim.), lambdaind=as.integer(rep(1,nsim.)))
+                   lambda0 = as.double(lambda0), xi = as.double(mu), 
+                   REML = as.logical(TRUE), 
+                   res = double(nsim.), lambdaind=as.integer(rep(1,nsim.)), 
+                   PACKAGE="RLRsim")
             }, mc.cores = ncpus)
             do.call(mapply, c(tmp, FUN=c))
         } else { 
@@ -152,20 +154,29 @@
                     }
                     tmp <- parallel::parLapply(cl, seq_len(ncpus), function(i){
                         .C("RLRsim", p = as.integer(p), k = as.integer(K), 
-                           n = as.integer(n), s = as.integer(nsim.), g = as.integer(gridlength), 
-                           q = as.integer(0), mu = as.double(mu), lambda = as.double(lambda.grid), 
-                           lambda0 = as.double(lambda0), xi = as.double(mu), REML = as.logical(TRUE), 
-                           res = double(nsim.), lambdaind=as.integer(rep(1,nsim.)))
+                           n = as.integer(n), s = as.integer(nsim.), 
+                           g = as.integer(gridlength), 
+                           q = as.integer(0), mu = as.double(mu), 
+                           lambda = as.double(lambda.grid), 
+                           lambda0 = as.double(lambda0), xi = as.double(mu), 
+                           REML = as.logical(TRUE), 
+                           res = double(nsim.), lambdaind=as.integer(rep(1,nsim.)),
+                           PACKAGE="RLRsim")
                     })
                     parallel::stopCluster(cl)
                     do.call(mapply, c(tmp, FUN=c))
                 } else {
                     tmp <- parallel::parLapply(cl, seq_len(ncpus), function(i){
                         .C("RLRsim", p = as.integer(p), k = as.integer(K), 
-                           n = as.integer(n), s = as.integer(nsim.), g = as.integer(gridlength), 
-                           q = as.integer(0), mu = as.double(mu), lambda = as.double(lambda.grid), 
-                           lambda0 = as.double(lambda0), xi = as.double(mu), REML = as.logical(TRUE), 
-                           res = double(nsim.), lambdaind=as.integer(rep(1,nsim.)))
+                           n = as.integer(n), s = as.integer(nsim.), 
+                           g = as.integer(gridlength), 
+                           q = as.integer(0), mu = as.double(mu), 
+                           lambda = as.double(lambda.grid), 
+                           lambda0 = as.double(lambda0), xi = as.double(mu), 
+                           REML = as.logical(TRUE), 
+                           res = double(nsim.), 
+                           lambdaind=as.integer(rep(1,nsim.)),
+                           PACKAGE="RLRsim")
                     })
                     do.call(mapply, c(tmp, FUN=c))
                 }  
@@ -176,7 +187,8 @@
            n = as.integer(n), s = as.integer(nsim), g = as.integer(gridlength), 
            q = as.integer(0), mu = as.double(mu), lambda = as.double(lambda.grid), 
            lambda0 = as.double(lambda0), xi = as.double(mu), REML = as.logical(TRUE), 
-           res = double(nsim), lambdaind=as.integer(rep(1,nsim)))
+           res = double(nsim), lambdaind=as.integer(rep(1,nsim)),
+           PACKAGE="RLRsim")
     }
     
     
