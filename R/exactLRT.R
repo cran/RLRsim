@@ -83,7 +83,7 @@
         }
         if (class(m) %in% c("amer", "mer"))
             stop("Package <amer> and versions of <lme4> below lme4_1.0 are no longer supported.")
-        if (!((c.m <- class(m)) %in% c("lme", "lmerMod"))) 
+        if (!((c.m <- class(m)) %in% c("lme", "lmerMod", "merModLmerTest"))) 
             stop("Invalid m specified. \n")
         
         

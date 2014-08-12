@@ -101,7 +101,7 @@
     }
     if (class(m) %in% c("amer", "mer")) 
         stop("Package <amer> and versions of <lme4> below lme4_1.0 are no longer supported.")
-    if (!(c.m <- (class(m))) %in% c("lme", "lmerMod")) 
+    if (!(c.m <- (class(m))) %in% c("lme", "lmerMod", "merModLmerTest")) 
         stop("Invalid m specified. \n")
     if ("REML" != switch(c.m, 
                          lme = m$method, 
@@ -154,7 +154,7 @@
         }
         ## bug fix submitted by Andrzej Galecki 3/10/2009
         DFx <- switch(c.m, lme = anova(mA,m0)$df, 
-                      lmerMod=anova(mA,m0)$Df) 
+                      lmerMod=anova(mA, m0, refit=FALSE)$Df) 
         if (abs(diff(DFx)) > 1) {
             stop("Random effects not independent - covariance(s) set to 0 under H0.\n
                  exactRLRT can only test a single variance.\n")
@@ -164,7 +164,8 @@
     }
     if (rlrt.obs != 0) {
         sample <- RLRTSim(X, Z, qrX=qrX, sqrt.Sigma = chol(cov2cor(Vr)), 
-                          lambda0 = 0, seed = seed, nsim = nsim, log.grid.hi = log.grid.hi, 
+                          lambda0 = 0, seed = seed, nsim = nsim, 
+                          log.grid.hi = log.grid.hi, 
                           log.grid.lo = log.grid.lo, gridlength = gridlength, 
                           parallel = match.arg(parallel), 
                           ncpus = ncpus, cl = cl)

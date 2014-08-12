@@ -1,5 +1,4 @@
-`extract.lmerModDesign` <- function(m)
-{
+extract.lmerModDesign <- function(m) {
     X<-getME(m,"X")
     Z<-as.matrix(getME(m,"Z"))
     v <- VarCorr(m)

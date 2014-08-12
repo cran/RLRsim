@@ -1,9 +1,10 @@
 #' @export RLRTSim
-'RLRTSim' <- function(X, Z, qrX=qr(X), sqrt.Sigma, lambda0 = NA, 
-                      seed = NA, nsim = 10000, use.approx = 0, log.grid.hi = 8, 
-                      log.grid.lo = -10, gridlength = 200,
-                      parallel = c("no", "multicore", "snow"), 
-                      ncpus = 1L, cl = NULL) {
+#' @import Rcpp
+RLRTSim <- function(X, Z, qrX=qr(X), sqrt.Sigma, lambda0 = NA, 
+                    seed = NA, nsim = 10000, use.approx = 0, log.grid.hi = 8, 
+                    log.grid.lo = -10, gridlength = 200,
+                    parallel = c("no", "multicore", "snow"), 
+                    ncpus = 1L, cl = NULL) {
     if (is.na(lambda0)) {
         lambda0 <- 0
     }
@@ -56,9 +57,11 @@
             {
                 w.K <- rchisq(nsim, (K - 1))
                 w.n <- rchisq(nsim, (n - p - K + 1))
-                lambda <- pmax(rep(0, nsim), ((((n - p - K +1) / (K - 1)) * w.K/w.n - 1)/mu[1]))
+                lambda <- pmax(rep(0, nsim), 
+                               ((((n - p - K +1) / (K - 1)) * w.K/w.n - 1)/mu[1]))
                 rlrt <- rep(0, nsim)
-                rlrt[lambda != 0] = ((n - p) * log((w.K + w.n)/(n -p)) - (n - p - K + 1) * 
+                rlrt[lambda != 0] = ((n - p) * log((w.K + w.n)/(n -p)) - 
+                                         (n - p - K + 1) * 
                                          log(w.n/(n - p - K + 1)) - (K - 1) * 
                                          log(w.K/(K - 1)))[lambda != 0]
                 return(cbind(lambda, rlrt))
@@ -79,7 +82,8 @@
                 lambda <- pmax(rep(0, nsim), ((((n - p - 1) * w.1)/w.n) - 1)/mu)
                 rlrt <- rep(0, nsim)
                 rlrt[lambda != 0] <- log(((w.1 + w.n)/(n - p))^(n -p) / 
-                                            (w.1 *(w.n/(n - p - 1))^(n - p - 1)))[lambda != 0]
+                                             (w.1 *(w.n/(n - p - 1)) ^ 
+                                                  (n - p - 1)))[lambda != 0]
                 return(cbind(lambda, rlrt))
             }
             res <- approx.scalarmu(nsim, n, p, K, mu)
@@ -99,9 +103,11 @@
     #generate symmetric grid around lambda0 that is log-equidistant to the right,
     make.lambdagrid <- function(lambda0, gridlength, log.grid.lo, log.grid.hi){
         if (lambda0 == 0) 
-            return(c(0, exp(seq(log.grid.lo, log.grid.hi, length = gridlength - 1))))
+            return(c(0, exp(seq(log.grid.lo, log.grid.hi, 
+                                length = gridlength - 1))))
         else {
-            leftratio <- min(max((log(lambda0)/((log.grid.hi) - (log.grid.lo))), 0.2), 0.8)
+            leftratio <- min(max((log(lambda0)/((log.grid.hi) - (log.grid.lo))),
+                                 0.2), 0.8)
             leftlength <- max(round(leftratio * gridlength) - 1, 2)
             leftdistance <- lambda0 - exp(log.grid.lo)
             #make sure leftlength doesn't split the left side into too small parts:
@@ -115,10 +121,11 @@
                                 length = leftlength + 1)[-(leftlength + 1)]
             }
             else {
-                leftdiffs <- ifelse(rep(leftdistance > 1, leftlength - 
-                                            1), leftdistance^((2:leftlength)/leftlength) - 
+                leftdiffs <- ifelse(rep(leftdistance > 1, leftlength - 1),
+                                    leftdistance^((2:leftlength)/leftlength) - 
                                         leftdistance^(1/leftlength), 
-                                    leftdistance^((leftlength - 1):1) - leftdistance^(leftlength))
+                                    leftdistance^((leftlength - 1):1) -
+                                        leftdistance^(leftlength))
                 leftgrid <- lambda0 - rev(leftdiffs)
             }
             rightlength <- gridlength - leftlength
@@ -136,13 +143,13 @@
         nsim. <- as.integer(ceiling(nsim/ncpus))
         if (have_mc) {
             tmp <- parallel::mclapply(seq_len(ncpus), function(i){
-                .C("RLRsim", p = as.integer(p), k = as.integer(K), 
-                   n = as.integer(n), s = as.integer(nsim.), g = as.integer(gridlength), 
-                   q = as.integer(0), mu = as.double(mu), lambda = as.double(lambda.grid), 
-                   lambda0 = as.double(lambda0), xi = as.double(mu), 
-                   REML = as.logical(TRUE), 
-                   res = double(nsim.), lambdaind=as.integer(rep(1,nsim.)), 
-                   PACKAGE="RLRsim")
+                  RLRsimCpp(p = as.integer(p), k = as.integer(K), 
+                          n = as.integer(n), nsim = as.integer(nsim.), 
+                          g = as.integer(gridlength), 
+                          q = as.integer(0), mu = as.double(mu), 
+                          lambda = as.double(lambda.grid), 
+                          lambda0 = as.double(lambda0), xi = as.double(mu), 
+                          REML = as.logical(TRUE))                
             }, mc.cores = ncpus)
             do.call(mapply, c(tmp, FUN=c))
         } else { 
@@ -154,44 +161,39 @@
                         parallel::clusterSetRNGStream(cl)
                     }
                     tmp <- parallel::parLapply(cl, seq_len(ncpus), function(i){
-                        .C("RLRsim", p = as.integer(p), k = as.integer(K), 
-                           n = as.integer(n), s = as.integer(nsim.), 
-                           g = as.integer(gridlength), 
-                           q = as.integer(0), mu = as.double(mu), 
-                           lambda = as.double(lambda.grid), 
-                           lambda0 = as.double(lambda0), xi = as.double(mu), 
-                           REML = as.logical(TRUE), 
-                           res = double(nsim.), lambdaind=as.integer(rep(1,nsim.)),
-                           PACKAGE="RLRsim")
+                         RLRsimCpp(p = as.integer(p), k = as.integer(K), 
+                                  n = as.integer(n), nsim = as.integer(nsim.), 
+                                  g = as.integer(gridlength), 
+                                  q = as.integer(0), mu = as.double(mu), 
+                                  lambda = as.double(lambda.grid), 
+                                  lambda0 = as.double(lambda0), xi = as.double(mu), 
+                                  REML = as.logical(TRUE))
                     })
                     parallel::stopCluster(cl)
                     do.call(mapply, c(tmp, FUN=c))
                 } else {
                     tmp <- parallel::parLapply(cl, seq_len(ncpus), function(i){
-                        .C("RLRsim", p = as.integer(p), k = as.integer(K), 
-                           n = as.integer(n), s = as.integer(nsim.), 
-                           g = as.integer(gridlength), 
-                           q = as.integer(0), mu = as.double(mu), 
-                           lambda = as.double(lambda.grid), 
-                           lambda0 = as.double(lambda0), xi = as.double(mu), 
-                           REML = as.logical(TRUE), 
-                           res = double(nsim.), 
-                           lambdaind=as.integer(rep(1,nsim.)),
-                           PACKAGE="RLRsim")
+                         RLRsimCpp(p = as.integer(p), k = as.integer(K), 
+                                  n = as.integer(n), nsim = as.integer(nsim.), 
+                                  g = as.integer(gridlength), 
+                                  q = as.integer(0), mu = as.double(mu), 
+                                  lambda = as.double(lambda.grid), 
+                                  lambda0 = as.double(lambda0), xi = as.double(mu), 
+                                  REML = as.logical(TRUE))
                     })
                     do.call(mapply, c(tmp, FUN=c))
                 }  
             }
         }
     } else {
-        .C("RLRsim", p = as.integer(p), k = as.integer(K), 
-           n = as.integer(n), s = as.integer(nsim), g = as.integer(gridlength), 
-           q = as.integer(0), mu = as.double(mu), lambda = as.double(lambda.grid), 
-           lambda0 = as.double(lambda0), xi = as.double(mu), REML = as.logical(TRUE), 
-           res = double(nsim), lambdaind=as.integer(rep(1,nsim)),
-           PACKAGE="RLRsim")
+         RLRsimCpp(p = as.integer(p), k = as.integer(K), 
+                  n = as.integer(n), nsim = as.integer(nsim), 
+                  g = as.integer(gridlength), 
+                  q = as.integer(0), mu = as.double(mu), 
+                  lambda = as.double(lambda.grid), 
+                  lambda0 = as.double(lambda0), xi = as.double(mu), 
+                  REML = as.logical(TRUE))
     }
-    
     
     ret <- res$res
     attr(ret, "lambda") <- lambda.grid[res$lambdaind] 

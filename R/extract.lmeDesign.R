@@ -18,17 +18,18 @@
 #' variance of the residuals
 #' \item \code{y} response variable
 #' }
-#' @author Fabian Scheipl, \code{extract.lmerModDesign} supplied by Ben Bolker.
+#' @author Fabian Scheipl, \code{extract.lmerModDesign} by Ben Bolker.
 #' Many thanks to Andrzej Galecki and Tomasz Burzykowski for bug fixes.
 #' @keywords utilities
 #' @examples
 #' 
 #' library(nlme)
-#' d <- extract.lmeDesign(lme(distance ~ age + Sex, data = Orthodont, random = ~ 1))
+#' design <- extract.lmeDesign(lme(distance ~ age + Sex, data = Orthodont, 
+#'                              random = ~ 1))
+#' str(design)
 #' 
 #' @export extract.lmeDesign
-`extract.lmeDesign` <-
-    function(m)
+extract.lmeDesign <- function(m)
     {
         start.level = 1
         
@@ -47,7 +48,6 @@
         Z <- matrix(0, n, 0)
         if (start.level <= n.levels) {
             for (i in 1:(n.levels - start.level + 1)) {
-                browser()
                 if(length(levels(m$groups[[n.levels-i+1]]))!=1)
                 {
                     X[[1]] <- model.matrix(~m$groups[[n.levels - i +
