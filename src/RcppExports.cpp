@@ -7,7 +7,7 @@ using namespace Rcpp;
 
 // RLRsimCpp
 List RLRsimCpp(int p, int k, int n, int nsim, int g, int q, Rcpp::NumericVector mu, Rcpp::NumericVector lambda, double lambda0, Rcpp::NumericVector xi, bool REML);
-RcppExport SEXP RLRsim_RLRsimCpp(SEXP pSEXP, SEXP kSEXP, SEXP nSEXP, SEXP nsimSEXP, SEXP gSEXP, SEXP qSEXP, SEXP muSEXP, SEXP lambdaSEXP, SEXP lambda0SEXP, SEXP xiSEXP, SEXP REMLSEXP) {
+RcppExport SEXP _RLRsim_RLRsimCpp(SEXP pSEXP, SEXP kSEXP, SEXP nSEXP, SEXP nsimSEXP, SEXP gSEXP, SEXP qSEXP, SEXP muSEXP, SEXP lambdaSEXP, SEXP lambda0SEXP, SEXP xiSEXP, SEXP REMLSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;

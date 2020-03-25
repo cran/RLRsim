@@ -5,9 +5,20 @@
 \alias{RLRTSim}
 \title{Simulation of the (Restricted) Likelihood Ratio Statistic}
 \usage{
-LRTSim(X, Z, q, sqrt.Sigma, seed = NA, nsim = 10000, log.grid.hi = 8,
-  log.grid.lo = -10, gridlength = 200, parallel = c("no", "multicore",
-  "snow"), ncpus = 1L, cl = NULL)
+LRTSim(
+  X,
+  Z,
+  q,
+  sqrt.Sigma,
+  seed = NA,
+  nsim = 10000,
+  log.grid.hi = 8,
+  log.grid.lo = -10,
+  gridlength = 200,
+  parallel = c("no", "multicore", "snow"),
+  ncpus = 1L,
+  cl = NULL
+)
 }
 \arguments{
 \item{X}{The fixed effects design matrix of the model under the alternative}
@@ -17,7 +28,7 @@ LRTSim(X, Z, q, sqrt.Sigma, seed = NA, nsim = 10000, log.grid.hi = 8,
 \item{q}{The number of parameters restrictions on the fixed effects (see
 Details)}
 
-\item{sqrt.Sigma}{The upper triangular cholesky factor of the correlation
+\item{sqrt.Sigma}{The upper triangular Cholesky factor of the correlation
 matrix of the random effect}
 
 \item{seed}{Specify a seed for \code{set.seed}}
@@ -45,7 +56,7 @@ If not supplied, a cluster on the local machine is created for the duration
 of the call.}
 }
 \value{
-A vector containig the the simulated values of the (R)LRT under the
+A vector containing the the simulated values of the (R)LRT under the
   null, with attribute 'lambda' giving \eqn{\arg\min(f(\lambda))} (see
   Crainiceanu, Ruppert (2004)) for the simulations.
 }
@@ -62,7 +73,7 @@ The model under the alternative must be a linear mixed model
 \eqn{y=X\beta+Zb+\varepsilon}{y=X*beta+Z*b+epsilon} with a single random
 effect \eqn{b} with known correlation structure \eqn{Sigma} and i.i.d errors.
 The simulated distribution of the likelihood ratio statistic was derived by
-Crainiceanu & Ruppert (2004). The simulation algorithm uses a gridsearch over
+Crainiceanu & Ruppert (2004). The simulation algorithm uses a grid search over
 a log-regular grid of values of
 \eqn{\lambda=\frac{Var(b)}{Var(\varepsilon)}}{lambda=Var(b)/Var(epsilon)} to
 maximize the likelihood under the alternative for \code{nsim} realizations of
@@ -87,17 +98,13 @@ sim.LRT <- LRTSim(X, Z, 1, diag(10))
 (pval <- mean(sim.LRT > obs.LRT))
 
 }
-\author{
-Fabian Scheipl; parallelization code adapted from \code{boot} package
-}
 \references{
 Crainiceanu, C. and Ruppert, D. (2004) Likelihood ratio tests in
   linear mixed models with one variance component, \emph{Journal of the Royal
   Statistical Society: Series B},\bold{66},165--185.
 
   Scheipl, F. (2007) Testing for nonparametric terms and random effects in
-  structured additive regression.  Diploma thesis.\
-  \url{http://www.statistik.lmu.de/~scheipl/downloads/DIPLOM.zip}.
+  structured additive regression.  Diploma thesis (unpublished).
 
   Scheipl, F., Greven, S. and Kuechenhoff, H (2008) Size and power of tests
   for a zero random effect variance or polynomial regression in additive and
@@ -107,6 +114,8 @@ Crainiceanu, C. and Ruppert, D. (2004) Likelihood ratio tests in
 \seealso{
 \code{\link{exactLRT}}, \code{\link{exactRLRT}} for tests
 }
+\author{
+Fabian Scheipl; parallelization code adapted from \code{boot} package
+}
 \keyword{datagen}
 \keyword{distribution}
-

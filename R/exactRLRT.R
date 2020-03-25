@@ -20,6 +20,10 @@
 #' very small. We use the finite sample distribution of the restricted
 #' likelihood ratio test statistic as derived by Crainiceanu & Ruppert (2004).
 #' 
+#' No simulation is performed if the observed test statistic is 0. (i.e., if the
+#' fit of the model fitted under the alternative is indistinguishable from the
+#' model fit under H0), since the  p-value is always 1 in this case.
+#' 
 #' @param m The fitted model under the alternative or, for testing in models
 #' with multiple variance components, the reduced model containing only the
 #' random effect to be tested (see Details), an \code{lme}, \code{lmerMod} or
@@ -73,9 +77,8 @@
 #' @keywords htest
 #' @examples
 #' 
-#' library(lme4)
-#' data(sleepstudy)
-#' mA <- lmer(Reaction ~ I(Days-4.5) + (1|Subject) + (0 + I(Days-4.5)|Subject), 
+#' data(sleepstudy, package = "lme4")
+#' mA <- lme4::lmer(Reaction ~ I(Days-4.5) + (1|Subject) + (0 + I(Days-4.5)|Subject), 
 #'   data = sleepstudy)
 #' m0 <- update(mA, . ~ . - (0 + I(Days-4.5)|Subject))
 #' m.slope  <- update(mA, . ~ . - (1|Subject))
@@ -95,6 +98,7 @@
 #' 
 #' @export exactRLRT
 #' @importFrom stats anova cov2cor logLik quantile 
+#' @importFrom utils packageVersion
 'exactRLRT' <- function(m, mA = NULL, m0 = NULL, seed = NA, 
   nsim = 10000, log.grid.hi = 8, log.grid.lo = -10, gridlength = 200,
   parallel = c("no", "multicore", "snow"), 
@@ -105,9 +109,10 @@
   }
   if (class(m) %in% c("amer", "mer")) 
     stop("Models fit with package <amer> or versions of <lme4> below 1.0 are no longer supported.")
-  if (!(c.m <- (class(m))) %in% c("lme", "lmerMod", "merModLmerTest")) 
+  if (!(c.m <- (class(m))) %in% c("lme", "lmerMod", "merModLmerTest", "lmerModLmerTest")) 
     stop("Invalid <m> specified. \n")
-  if(c.m == "merModLmerTest") c.m <- "lmerMod"
+  if (c.m %in% c("merModLmerTest", "lmerModLmerTest")) 
+    c.m <- "lmerMod"
   if ("REML" != switch(c.m, 
     lme = m$method, 
     lmerMod = ifelse(lme4::isREML(m), "REML", "ML"))){
@@ -122,7 +127,7 @@
   Z <- d$Z
   y <- d$y
   Vr <- d$Vr
-  if(all(Vr == 0)){
+  if (all(Vr == 0)) {
     # this only happens if the estimate of the tested variance component is 0. 
     # since we still want chol(cov2cor(Vr)) to work, this does the trick.
     diag(Vr) <- 1
@@ -131,7 +136,7 @@
   n <- nrow(X)
   p <- ncol(X)
   if (is.null(mA) && is.null(m0)) {
-    if(length(d$lambda) != 1 || d$k != 1) 
+    if (length(d$lambda) != 1 || d$k != 1) 
       stop("multiple random effects in model - 
                  exactRLRT needs <m> with only a single random effect.")
     #2*restricted ProfileLogLik under H0: lambda=0
@@ -162,9 +167,10 @@
         }
       }     
     }
+    lmer_nm <- if (utils::packageVersion("lme4")<="1.1.21") "Df" else "npar"
     ## bug fix submitted by Andrzej Galecki 3/10/2009
     DFx <- switch(c.m, lme = anova(mA,m0)$df, 
-      lmerMod = anova(mA, m0, refit = FALSE)$Df) 
+                  lmerMod = anova(mA, m0, refit = FALSE)[[lmer_nm]]) 
     if (abs(diff(DFx)) > 1) {
       stop("Random effects not independent - covariance(s) set to 0 under H0.\n
                  exactRLRT can only test a single variance.\n")
@@ -173,7 +179,7 @@
         logLik(m0, REML = TRUE)[1]))
   }
   p <- if (rlrt.obs != 0) {
-    sample <- RLRTSim(X, Z, qrX=qrX, sqrt.Sigma = chol(cov2cor(Vr)), 
+    sample <- RLRTSim(X, Z, qrX = qrX, sqrt.Sigma = chol(cov2cor(Vr)), 
       lambda0 = 0, seed = seed, nsim = nsim, 
       log.grid.hi = log.grid.hi, 
       log.grid.lo = log.grid.lo, gridlength = gridlength, 
@@ -185,12 +191,15 @@
     }
     mean(rlrt.obs < sample)
   } else {
+    message("Observed RLRT statistic is 0, no simulation performed.")
+    nsim <- 0
+    sample <- NULL
     1
   }  
   RVAL <- list(statistic = c(RLRT = rlrt.obs), p.value = p, 
     method = paste("simulated finite sample distribution of RLRT.\n
                                 (p-value based on", 
-      nsim, "simulated values)"), sample=sample)
+      nsim, "simulated values)"), sample = sample)
   class(RVAL) <- "htest"
   return(RVAL)
 } 

@@ -4,9 +4,19 @@
 \alias{exactRLRT}
 \title{Restricted Likelihood Ratio Tests for additive and linear mixed models}
 \usage{
-exactRLRT(m, mA = NULL, m0 = NULL, seed = NA, nsim = 10000,
-  log.grid.hi = 8, log.grid.lo = -10, gridlength = 200,
-  parallel = c("no", "multicore", "snow"), ncpus = 1L, cl = NULL)
+exactRLRT(
+  m,
+  mA = NULL,
+  m0 = NULL,
+  seed = NA,
+  nsim = 10000,
+  log.grid.hi = 8,
+  log.grid.lo = -10,
+  gridlength = 200,
+  parallel = c("no", "multicore", "snow"),
+  ncpus = 1L,
+  cl = NULL
+)
 }
 \arguments{
 \item{m}{The fitted model under the alternative or, for testing in models
@@ -77,12 +87,15 @@ number of parameters (fixed and random) is smaller than the number of
 observations and the nuisance variance components are not superfluous or
 very small. We use the finite sample distribution of the restricted
 likelihood ratio test statistic as derived by Crainiceanu & Ruppert (2004).
+
+No simulation is performed if the observed test statistic is 0. (i.e., if the
+fit of the model fitted under the alternative is indistinguishable from the
+model fit under H0), since the  p-value is always 1 in this case.
 }
 \examples{
 
-library(lme4)
-data(sleepstudy)
-mA <- lmer(Reaction ~ I(Days-4.5) + (1|Subject) + (0 + I(Days-4.5)|Subject), 
+data(sleepstudy, package = "lme4")
+mA <- lme4::lmer(Reaction ~ I(Days-4.5) + (1|Subject) + (0 + I(Days-4.5)|Subject), 
   data = sleepstudy)
 m0 <- update(mA, . ~ . - (0 + I(Days-4.5)|Subject))
 m.slope  <- update(mA, . ~ . - (1|Subject))
@@ -100,10 +113,6 @@ m.l<-gamm(I(log(Volume)) ~ Height + s(Girth, m = 2), data = trees,
   method = "REML")$lme
 exactRLRT(m.l)
 
-}
-\author{
-Fabian Scheipl, bug fixes by Andrzej Galecki, updates for
-\pkg{lme4}-compatibility by Ben Bolker
 }
 \references{
 Crainiceanu, C. and Ruppert, D. (2004) Likelihood ratio tests in
@@ -124,5 +133,8 @@ linear mixed models.  \emph{Computational Statistics & Data Analysis},
 \code{\link{RLRTSim}} for the underlying simulation algorithm;
 \code{\link{exactLRT}} for likelihood based tests
 }
+\author{
+Fabian Scheipl, bug fixes by Andrzej Galecki, updates for
+\pkg{lme4}-compatibility by Ben Bolker
+}
 \keyword{htest}
-

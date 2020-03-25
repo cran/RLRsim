@@ -11,7 +11,7 @@
 #' \eqn{y=X\beta+Zb+\varepsilon}{y=X*beta+Z*b+epsilon} with a single random
 #' effect \eqn{b} with known correlation structure \eqn{Sigma} and i.i.d errors.
 #' The simulated distribution of the likelihood ratio statistic was derived by
-#' Crainiceanu & Ruppert (2004). The simulation algorithm uses a gridsearch over
+#' Crainiceanu & Ruppert (2004). The simulation algorithm uses a grid search over
 #' a log-regular grid of values of
 #' \eqn{\lambda=\frac{Var(b)}{Var(\varepsilon)}}{lambda=Var(b)/Var(epsilon)} to
 #' maximize the likelihood under the alternative for \code{nsim} realizations of
@@ -25,7 +25,7 @@
 #' @param Z The random effects design matrix of the model under the alternative
 #' @param q The number of parameters restrictions on the fixed effects (see
 #'   Details)
-#' @param sqrt.Sigma The upper triangular cholesky factor of the correlation
+#' @param sqrt.Sigma The upper triangular Cholesky factor of the correlation
 #'   matrix of the random effect
 #' @param seed Specify a seed for \code{set.seed}
 #' @param nsim Number of values to simulate
@@ -43,7 +43,7 @@
 #' @param cl An optional parallel or snow cluster for use if parallel = "snow".
 #'   If not supplied, a cluster on the local machine is created for the duration
 #'   of the call.
-#' @return A vector containig the the simulated values of the (R)LRT under the
+#' @return A vector containing the the simulated values of the (R)LRT under the
 #'   null, with attribute 'lambda' giving \eqn{\arg\min(f(\lambda))} (see
 #'   Crainiceanu, Ruppert (2004)) for the simulations.
 #' @author Fabian Scheipl; parallelization code adapted from \code{boot} package
@@ -53,8 +53,7 @@
 #'   Statistical Society: Series B},\bold{66},165--185.
 #'
 #'   Scheipl, F. (2007) Testing for nonparametric terms and random effects in
-#'   structured additive regression.  Diploma thesis.\
-#'   \url{http://www.statistik.lmu.de/~scheipl/downloads/DIPLOM.zip}.
+#'   structured additive regression.  Diploma thesis (unpublished).
 #'
 #'   Scheipl, F., Greven, S. and Kuechenhoff, H (2008) Size and power of tests
 #'   for a zero random effect variance or polynomial regression in additive and
@@ -77,7 +76,7 @@
 #' (pval <- mean(sim.LRT > obs.LRT))
 #'
 #' @export LRTSim
-#' @useDynLib RLRsim
+#' @useDynLib RLRsim, .registration = TRUE
 LRTSim <- function(X,Z,q, sqrt.Sigma, seed=NA, nsim=10000,
   log.grid.hi=8, log.grid.lo=-10, gridlength=200,
   parallel = c("no", "multicore", "snow"),
