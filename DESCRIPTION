@@ -2,7 +2,7 @@ Package: RLRsim
 Type: Package
 Title: Exact (Restricted) Likelihood Ratio Tests for Mixed and Additive
         Models
-Version: 3.1-6
+Version: 3.1-7
 Authors@R: c(person("Fabian", "Scheipl", role = c("aut", "cre"),
 	   email = "fabian.scheipl@stat.uni-muenchen.de",
 	   comment=c(ORCID="0000-0001-8172-3603")),
@@ -16,14 +16,15 @@ Description: Rapid, simulation-based exact (restricted) likelihood ratio tests
 License: GPL
 URL: https://github.com/fabian-s/RLRsim
 BugReports: https://github.com/fabian-s/RLRsim/issues
+SystemRequirements: C++11
 Depends: R (>= 2.14.0)
 Imports: Rcpp (>= 0.11.1), lme4 (>= 1.1), mgcv, nlme
 LinkingTo: Rcpp
 Enhances: SemiPar, lmerTest
-RoxygenNote: 7.0.2
+RoxygenNote: 7.1.2
 NeedsCompilation: yes
-Packaged: 2020-03-24 09:42:56 UTC; lmmista-wap218
+Packaged: 2022-03-14 14:16:46 UTC; fabians
 Author: Fabian Scheipl [aut, cre] (<https://orcid.org/0000-0001-8172-3603>),
   Ben Bolker [ctb] (<https://orcid.org/0000-0002-2127-0443>)
 Repository: CRAN
-Date/Publication: 2020-03-25 15:00:17 UTC
+Date/Publication: 2022-03-14 15:50:05 UTC

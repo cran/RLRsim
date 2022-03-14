@@ -1,3 +1,4 @@
+#define USE_FC_LEN_T
 // [[Rcpp::depends(Rcpp)]]
 #include <Rcpp.h>
 
