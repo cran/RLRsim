@@ -2,7 +2,7 @@ Package: RLRsim
 Type: Package
 Title: Exact (Restricted) Likelihood Ratio Tests for Mixed and Additive
         Models
-Version: 3.1-7
+Version: 3.1-8
 Authors@R: c(person("Fabian", "Scheipl", role = c("aut", "cre"),
 	   email = "fabian.scheipl@stat.uni-muenchen.de",
 	   comment=c(ORCID="0000-0001-8172-3603")),
@@ -23,8 +23,8 @@ LinkingTo: Rcpp
 Enhances: SemiPar, lmerTest
 RoxygenNote: 7.1.2
 NeedsCompilation: yes
-Packaged: 2022-03-14 14:16:46 UTC; fabians
+Packaged: 2022-03-15 16:21:53 UTC; fabians
 Author: Fabian Scheipl [aut, cre] (<https://orcid.org/0000-0001-8172-3603>),
   Ben Bolker [ctb] (<https://orcid.org/0000-0002-2127-0443>)
 Repository: CRAN
-Date/Publication: 2022-03-14 15:50:05 UTC
+Date/Publication: 2022-03-16 16:10:07 UTC
